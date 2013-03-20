@@ -43,7 +43,7 @@ object build extends Build{
   )
 
   val u = "0.6.4"
-  val xtendVersion = "2.3.1"
+  val xtendVersion = "2.4.0"
 
   lazy val server = Project(
     "server",
