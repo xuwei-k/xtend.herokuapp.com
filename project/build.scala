@@ -37,12 +37,12 @@ object build extends Build{
     file("common"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        "org.scalaz" %% "scalaz-core" % "6.0.4"
+        "org.scalaz" %% "scalaz-core" % "7.0.0-M9"
       )
     )
   )
 
-  val u = "0.6.4"
+  val u = "0.6.7"
   val xtendVersion = "2.4.0"
 
   lazy val server = Project(
@@ -50,7 +50,7 @@ object build extends Build{
     file("server"),
     settings = buildSettings ++ startScriptForClassesSettings ++ Seq(
       libraryDependencies ++= Seq("filter","jetty","json").map{n=>
-        "net.databinder" %% ("unfiltered-"+n) % u
+        "net.databinder" %% ("unfiltered-"+n) % u exclude("org.specs2", "specs2_2.10") // https://github.com/unfiltered/unfiltered/pull/163
       },
       libraryDependencies ++= Seq(
         "net.databinder" %% "unfiltered-spec" % u % "test",
@@ -91,7 +91,7 @@ object build extends Build{
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
         "org.scalaj" %% "scalaj-http" % "0.3.6",
-        "net.liftweb" % "lift-json_2.9.1" % "2.4"
+        "org.json4s" %% "json4s-native" % "3.2.0"
       )
     )
   )dependsOn(common)

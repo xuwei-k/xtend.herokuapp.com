@@ -3,7 +3,8 @@ package com.herokuapp.xtend
 import scalaz._,Scalaz._
 import java.io.File
 import scala.io.Source.fromFile
-import net.liftweb.json._
+import org.json4s._
+import org.json4s.native.JsonMethods._
 import scalaj.http._
 
 object Client extends Client("http://xtend.herokuapp.com")

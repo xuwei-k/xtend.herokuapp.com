@@ -12,14 +12,14 @@ import org.eclipse.xtend.core.XtendStandaloneSetup
 import net.liftweb.json._
 import org.apache.log4j.{Logger => Log4jLogger,Level,WriterAppender,HTMLLayout,SimpleLayout,Layout}
 
-class App(debug:Boolean) extends unfiltered.filter.Plan {
+class App(debug: Boolean) extends unfiltered.filter.Plan {
 
   lazy val jarList = { file("lib_managed") ** "*.jar" get } :+ IO.classLocationFile[Predef.type]
 
-  def xtend2java(src:Seq[SourceFile]) = {
+  def xtend2java(src: Seq[SourceFile]) = {
     IO.withTemporaryDirectory{in =>
       src.foreach{f =>
-        IO.writeLines(in / f.name ,f.contents.pure[Seq] )
+        IO.writeLines(in / f.name, Seq(f.contents) )
       }
       IO.withTemporaryDirectory{out =>
         compileXtend(out,in,jarList)
@@ -27,7 +27,7 @@ class App(debug:Boolean) extends unfiltered.filter.Plan {
     }
   }
 
-  def createLoggers():(Writer,Writer) = {
+  def createLoggers():(Writer, Writer) = {
     val logger = Log4jLogger.getLogger("org.eclipse.xtext")
     logger.setAdditivity(false)
     logger.setLevel(Level.DEBUG)
@@ -41,7 +41,7 @@ class App(debug:Boolean) extends unfiltered.filter.Plan {
     (new SimpleLayout(),new HTMLLayout()).mapElements(add,add)
   }
 
-  def compileXtend(out:File,in:File,cp:Seq[File]):Either[ErrorMessage,Seq[SourceFile]] = {
+  def compileXtend(out: File, in: File, cp: Seq[File]): ErrorMessage \/ Seq[SourceFile] = {
     val (simple,html) = createLoggers()
     try{
       val resultWriter = new java.io.CharArrayWriter
@@ -86,10 +86,10 @@ class App(debug:Boolean) extends unfiltered.filter.Plan {
         } yield SourceFile(name,contents)
       }yield files
 
-      sourceFiles.map(xtend2java).map{
-        case Right(seq)  => Result(false,EmptyError,seq)
-        case Left(error) => Result(true,error,Nil)
-      }.getOrElse{
+      sourceFiles.map(xtend2java).map{_.fold(
+        error => Result(true, error, Nil),
+        seq => Result(false, EmptyError, seq)
+      )}.getOrElse{
         val msg = "invalid params " + str
         Result(true,ErrorMessage(msg,msg),Nil)
       }.toJsonResponse
@@ -99,11 +99,11 @@ class App(debug:Boolean) extends unfiltered.filter.Plan {
       Html(
       <html>
         <head>
-          <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.js" />
-          <script type="text/javascript" src="/xtendheroku.js" />
+          <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.js"></script>
+          <script type="text/javascript" src="/xtendheroku.js"></script>
           <title>xtend {XtendVersion()} web interface</title>
           <link rel="stylesheet" href="./xtendheroku.css" type="text/css" />
-          <script src="google-code-prettify/prettify.js" type="text/javascript" />
+          <script src="google-code-prettify/prettify.js" type="text/javascript"></script>
           <link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"/>
         </head>
         <body>
@@ -123,7 +123,7 @@ class App(debug:Boolean) extends unfiltered.filter.Plan {
               <div id="xtendcode_wrap" class="source_code">
                 <p class="xtend_class_wrap">class <input id="xtend_class_name" type="text" />{"{"}</p>
                 <p id='xtend_file_name_wrap'>file name<input id="xtend_file_name" type="text" /></p>
-                <textarea id='xtendcode' />
+                <textarea id='xtendcode'></textarea>
                 <p class="xtend_class_wrap" >{"}"}</p>
               </div>
             </div>
@@ -136,13 +136,13 @@ class App(debug:Boolean) extends unfiltered.filter.Plan {
   }
 }
 
-case class SourceFile(name:String,contents:String)
+case class SourceFile(name: String, contents: String)
 
-case class ErrorMessage(simple:String,html:String)
+case class ErrorMessage(simple: String, html: String)
 
-object EmptyError extends ErrorMessage("","")
+object EmptyError extends ErrorMessage("", "")
 
-case class Result(error:Boolean,msg:ErrorMessage,result:Seq[SourceFile]){
+case class Result(error: Boolean, msg: ErrorMessage, result: Seq[SourceFile]){
   import net.liftweb.json.JsonDSL._
 
   def toJsonResponse = Json(
