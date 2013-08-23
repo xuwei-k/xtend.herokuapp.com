@@ -1,6 +1,6 @@
 package com.herokuapp.xtend
 
-import scalaz._,Scalaz._
+import scalaz._, syntax.std.tuple._, syntax.either._
 import unfiltered.request._
 import unfiltered.response._
 import util.Properties
@@ -9,7 +9,8 @@ import java.io.{Writer,File}
 import org.eclipse.xtend.core.compiler.batch.XtendBatchCompiler
 import org.apache.log4j.BasicConfigurator
 import org.eclipse.xtend.core.XtendStandaloneSetup
-import net.liftweb.json._
+import org.json4s._
+import org.json4s.native.JsonMethods.{parseOpt, pretty, render}
 import org.apache.log4j.{Logger => Log4jLogger,Level,WriterAppender,HTMLLayout,SimpleLayout,Layout}
 
 class App(debug: Boolean) extends unfiltered.filter.Plan {
@@ -143,7 +144,7 @@ case class ErrorMessage(simple: String, html: String)
 object EmptyError extends ErrorMessage("", "")
 
 case class Result(error: Boolean, msg: ErrorMessage, result: Seq[SourceFile]){
-  import net.liftweb.json.JsonDSL._
+  import org.json4s.JsonDSL._
 
   def toJsonResponse = Json(
     (Common.ERROR   -> error) ~

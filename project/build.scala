@@ -8,7 +8,7 @@ object build extends Build{
       organization := "com.herokuapp.xtend",
       version := "0.1.0-SNAPSHOT",
       scalacOptions := Seq("-deprecation", "-unchecked"),
-      scalaVersion := "2.9.2",
+      scalaVersion := "2.10.2",
       shellPrompt in ThisBuild := { state =>
         Project.extract(state).currentRef.project + "> "
       },
@@ -37,20 +37,20 @@ object build extends Build{
     file("common"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        "org.scalaz" %% "scalaz-core" % "7.0.0-M9"
+        "org.scalaz" %% "scalaz-core" % "7.1.0-M2"
       )
     )
   )
 
-  val u = "0.6.7"
+  val u = "0.6.8"
   val xtendVersion = "2.4.0"
 
   lazy val server = Project(
     "server",
     file("server"),
     settings = buildSettings ++ startScriptForClassesSettings ++ Seq(
-      libraryDependencies ++= Seq("filter","jetty","json").map{n=>
-        "net.databinder" %% ("unfiltered-"+n) % u exclude("org.specs2", "specs2_2.10") // https://github.com/unfiltered/unfiltered/pull/163
+      libraryDependencies ++= Seq("filter","jetty","json4s").map{n=>
+        "net.databinder" %% ("unfiltered-"+n) % u
       },
       libraryDependencies ++= Seq(
         "net.databinder" %% "unfiltered-spec" % u % "test",
@@ -60,7 +60,7 @@ object build extends Build{
         "org.eclipse.xtend" % "org.eclipse.xtend.standalone" % xtendVersion,
         "org.eclipse.emf" % "codegen" % "2.2.3"
       ),
-      libraryDependencies <+= sbtDependency,
+      libraryDependencies += "org.scala-sbt" % "sbt" % "0.13.0",
       resolvers ++= Seq(
         "http://fornax-platform.org/nexus/content/groups/public/",
         "https://oss.sonatype.org/content/repositories/releases/",
