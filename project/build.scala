@@ -1,5 +1,5 @@
 import sbt._,Keys._
-import com.typesafe.startscript.StartScriptPlugin._
+import com.typesafe.sbt.SbtStartScript._
 
 object build extends Build{
 
@@ -63,6 +63,7 @@ object build extends Build{
       libraryDependencies += "org.scala-sbt" % "sbt" % "0.13.0",
       resolvers ++= Seq(
         Opts.resolver.sonatypeReleases,
+        Classpaths.typesafeResolver,
         Resolver.url(
           "typesafe-ivy-release",
           url("http://typesafe.artifactoryonline.com/typesafe/ivy-releases")
