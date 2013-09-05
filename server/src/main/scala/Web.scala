@@ -100,7 +100,7 @@ class App(debug: Boolean) extends unfiltered.filter.Plan {
       Html(
       <html>
         <head>
-          <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.js"></script>
+          <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
           <script type="text/javascript" src="/xtendheroku.js"></script>
           <title>xtend {XtendVersion()} web interface</title>
           <link rel="stylesheet" href="./xtendheroku.css" type="text/css" />
