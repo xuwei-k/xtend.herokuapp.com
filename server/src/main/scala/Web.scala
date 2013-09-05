@@ -60,7 +60,7 @@ class App(debug: Boolean) extends unfiltered.filter.Plan {
         ErrorMessage(("compile fail" + simple.toString),html.toString).left
       }
     }catch{
-      case e =>
+      case e: Throwable =>
         ErrorMessage(Seq(simple.toString,e.toString).mkString("\n\n"),html.toString).left
     }
   }

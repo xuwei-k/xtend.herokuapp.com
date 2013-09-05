@@ -7,7 +7,7 @@ object build extends Build{
     Defaults.defaultSettings ++ Seq(
       organization := "com.herokuapp.xtend",
       version := "0.1.0-SNAPSHOT",
-      scalacOptions := Seq("-deprecation", "-unchecked"),
+      scalacOptions := Seq("-deprecation", "-unchecked", "-language:_", "-Xlint"),
       scalaVersion := "2.10.2",
       shellPrompt in ThisBuild := { state =>
         Project.extract(state).currentRef.project + "> "
@@ -43,7 +43,7 @@ object build extends Build{
   )
 
   val u = "0.6.8"
-  val xtendVersion = "2.4.0"
+  val xtendVersion = "2.4.3"
 
   lazy val server = Project(
     "server",
@@ -62,11 +62,12 @@ object build extends Build{
       ),
       libraryDependencies += "org.scala-sbt" % "sbt" % "0.13.0",
       resolvers ++= Seq(
-        "http://fornax-platform.org/nexus/content/groups/public/",
-        "https://oss.sonatype.org/content/repositories/releases/",
-        "http://build.eclipse.org/common/xtend/maven/",
-        "http://maven.eclipse.org/nexus/content/groups/public/"
-      ).map{u => u at u},
+        Opts.resolver.sonatypeReleases,
+        Resolver.url(
+          "typesafe-ivy-release",
+          url("http://typesafe.artifactoryonline.com/typesafe/ivy-releases")
+        )(Resolver.ivyStylePatterns)
+      ),
       sourceGenerators in Compile <+= (sourceManaged in Compile).map{xtendVersionInfoGenerate},
       retrieveManaged := true
     )
