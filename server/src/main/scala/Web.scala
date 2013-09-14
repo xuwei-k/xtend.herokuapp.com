@@ -104,8 +104,8 @@ class App(debug: Boolean) extends unfiltered.filter.Plan {
           <script type="text/javascript" src="/xtendheroku.js"></script>
           <title>xtend {XtendVersion()} web interface</title>
           <link rel="stylesheet" href="./xtendheroku.css" type="text/css" />
-          <script src="google-code-prettify/prettify.js" type="text/javascript"></script>
-          <link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"/>
+          <script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js" type="text/javascript"></script>
+          <link href="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.css" rel="stylesheet" type="text/css"/>
         </head>
         <body>
           <h1><a href={XTEND_SITE}>xtend</a> {XtendVersion()} web interface</h1>
